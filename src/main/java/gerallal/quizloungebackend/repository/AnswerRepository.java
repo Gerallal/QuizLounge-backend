@@ -1,4 +1,7 @@
 package gerallal.quizloungebackend.repository;
 
-public interface AnswerRepository {
+import gerallal.quizloungebackend.entity.Answer;
+import org.springframework.data.repository.CrudRepository;
+
+public interface AnswerRepository extends CrudRepository<Answer, Long> {
 }

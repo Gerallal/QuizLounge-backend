@@ -1,4 +1,7 @@
 package gerallal.quizloungebackend.repository;
 
-public interface AttemptRepository {
+import gerallal.quizloungebackend.entity.Attempt;
+import org.springframework.data.repository.CrudRepository;
+
+public interface AttemptRepository extends CrudRepository<Attempt, Long> {
 }

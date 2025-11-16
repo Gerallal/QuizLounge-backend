@@ -1,4 +1,7 @@
 package gerallal.quizloungebackend.repository;
 
-public interface FriendRequestRepository {
+import gerallal.quizloungebackend.entity.FriendRequest;
+import org.springframework.data.repository.CrudRepository;
+
+public interface FriendRequestRepository extends CrudRepository<FriendRequest, Long> {
 }
