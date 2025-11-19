@@ -25,13 +25,11 @@ public class UserService {
     public UserDTO login(String username, String password) {
         User user = userRepository.findByUsername(username).orElse(null);
 
-        System.out.println(user);
+        //System.out.println(user);
 
         if(user == null) {
-            return new UserDTO("alexa", "1234");
+            return new UserDTO("alexa", 1234);
         }
-
-
 
         return this.map(user);
     }

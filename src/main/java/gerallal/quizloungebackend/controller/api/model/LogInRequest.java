@@ -1,5 +1,6 @@
 package gerallal.quizloungebackend.controller.api.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@Builder
 @NoArgsConstructor
-public class UserDTO {
+@Builder
+public class LogInRequest {
     private String username;
-    private long id;
+    private String password;
 }
