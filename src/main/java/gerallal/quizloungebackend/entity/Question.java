@@ -15,17 +15,12 @@ public class Question {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private long id;
-    private String questionName;
-    private String typeOfQuestion; //bestimmt wie die Frage angezeigt und bewertet wird
+    private String questionname;
 
-//    private String answer1;
-//    private String answer2;
-//    private String answer3;
-//    private String answer4;
-//    private String rightAnswer;
-
-    @OneToMany
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
+
+    private int rightAnswer;
 
     @ManyToOne
     private Quiz quiz;
