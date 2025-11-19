@@ -20,6 +20,8 @@ public class Question {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
+    private String typeOfQuestion;
+
     private int rightAnswer;
 
     @ManyToOne
