@@ -54,5 +54,26 @@ public class UserRESTController {
         return null;
     }
 
+    @PostMapping("register")
+    public UserDTO register(@RequestBody LogInRequest params, HttpServletRequest request) {
+
+        if(userService.getUserByUsername(params.getUsername()) != null) {
+            return new UserDTO(null, 0);
+        }
+        User user = User.builder()
+                .passwordHash(params.getPassword())
+                .username(params.getUsername())
+                .build();
+        userService.save(user);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("username", params.getUsername());
+            session.setAttribute("loggedIn", true);
+            session.setMaxInactiveInterval(60 * 60);
+
+            return new UserDTO(user.getUsername(), user.getId());
+        }
+
+
 
 }
