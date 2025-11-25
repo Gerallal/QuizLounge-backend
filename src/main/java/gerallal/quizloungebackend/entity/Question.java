@@ -22,7 +22,7 @@ public class Question {
 
     private String typeOfQuestion;
 
-    private int rightAnswer;
+    //private int rightAnswer; //wird durch ein Attribute von der Entität Answer definiert
 
     @ManyToOne
     private Quiz quiz;

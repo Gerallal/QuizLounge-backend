@@ -44,15 +44,30 @@ public class UserRESTController {
 
 
     @GetMapping("current-user")
-    public String getCurrentUser(HttpServletRequest request) {
+    public Map<String, String> getCurrentUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
-            return (String) session.getAttribute("username");
+            return Map.of("username", (String) session.getAttribute("username"));
+            //return (String) session.getAttribute("username");
         }
-
-        return null;
+        return Map.of("username", null);
+        //return null;
     }
+
+    @GetMapping("current-user/zwei")
+    public UserDTO getCurrentUser2(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            User user = userService.getUserByUsername((String) session.getAttribute("username"));
+            if (user != null) {
+                return new UserDTO(user.getUsername(), user.getId());
+            }
+        }
+        return new UserDTO(null, 0);
+    }
+
 
     @PostMapping("register")
     public UserDTO register(@RequestBody LogInRequest params, HttpServletRequest request) {
@@ -72,7 +87,17 @@ public class UserRESTController {
             session.setMaxInactiveInterval(60 * 60);
 
             return new UserDTO(user.getUsername(), user.getId());
-        }
+    }
+
+    @GetMapping("home/{id}/friends")
+    public List<UserDTO> getFriends(@PathVariable Long id) {
+        User user = userService.getUserByID(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getFriends().stream()
+                .map(friend -> new UserDTO(friend.getUsername(), friend.getId()))
+                .toList();
+    }
 
 
 
