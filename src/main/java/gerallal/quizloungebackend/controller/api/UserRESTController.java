@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,18 +29,27 @@ public class UserRESTController {
     }*/
 
     @PostMapping("login")
-    public UserDTO login(@RequestBody LogInRequest params, HttpServletRequest request) {
+    public Map<String, Object> login(@RequestBody LogInRequest params, HttpServletRequest request) {
 
         User possibleUser = userService.getUserByUsername(params.getUsername());
+        Map<String, Object> loginResponse = new HashMap<>();
         if(possibleUser != null) {
             HttpSession session = request.getSession();
             session.setAttribute("username", params.getUsername());
             session.setAttribute("loggedIn", true);
             session.setMaxInactiveInterval(60 * 60);
 
-            return new UserDTO(possibleUser.getUsername(),possibleUser.getId().longValue());
+
+            loginResponse.put("username", possibleUser.getUsername());
+            loginResponse.put("id", possibleUser.getId());
+            loginResponse.put("success", true);
+
+            return loginResponse;
         }
-        return new UserDTO(null, 0);
+        loginResponse.put("username", "");
+        loginResponse.put("id", 0);
+        loginResponse.put("success", false);
+        return loginResponse;
     }
 
 
