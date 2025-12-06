@@ -31,17 +31,17 @@ public class UserRESTController {
     @PostMapping("login")
     public Map<String, Object> login(@RequestBody LogInRequest params, HttpServletRequest request) {
 
-        User possibleUser = userService.getUserByUsername(params.getUsername());
+        boolean success = userService.login(params.getUsername(), params.getPassword());
         Map<String, Object> loginResponse = new HashMap<>();
-        if(possibleUser != null) {
+        if(success) {
             HttpSession session = request.getSession();
             session.setAttribute("username", params.getUsername());
             session.setAttribute("loggedIn", true);
             session.setMaxInactiveInterval(60 * 60);
 
 
-            loginResponse.put("username", possibleUser.getUsername());
-            loginResponse.put("id", possibleUser.getId());
+            loginResponse.put("username", "Manni");
+            loginResponse.put("id", 300);
             loginResponse.put("success", true);
 
             return loginResponse;
@@ -80,23 +80,20 @@ public class UserRESTController {
 
 
     @PostMapping("register")
-    public UserDTO register(@RequestBody LogInRequest params, HttpServletRequest request) {
+    public Map<String, Object> register(@RequestBody LogInRequest params, HttpServletRequest request) {
 
-        if(userService.getUserByUsername(params.getUsername()) != null) {
-            return new UserDTO(null, 0);
-        }
-        User user = User.builder()
-                .passwordHash(params.getPassword())
-                .username(params.getUsername())
-                .build();
-        userService.save(user);
-
+        Map<String, Object> response = new HashMap<>();
+        if(userService.register(params)) {
             HttpSession session = request.getSession();
             session.setAttribute("username", params.getUsername());
             session.setAttribute("loggedIn", true);
             session.setMaxInactiveInterval(60 * 60);
+            response.put("success", true);
+            return response;
 
-            return new UserDTO(user.getUsername(), user.getId());
+        }
+        response.put("success", false);
+        return response;
     }
 
     @GetMapping("home/{id}/friends")

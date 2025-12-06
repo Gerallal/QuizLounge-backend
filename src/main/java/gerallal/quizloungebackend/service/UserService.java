@@ -1,8 +1,12 @@
 package gerallal.quizloungebackend.service;
 
+import gerallal.quizloungebackend.controller.api.model.LogInRequest;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
 
@@ -13,6 +17,8 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    private final PasswordEncoder encoder;
+
     public void save(User user) {userRepository.save(user); }
 
     public Optional<User> getUserByID(long id) {return userRepository.findById(id);}
@@ -22,22 +28,36 @@ public class UserService {
                 .orElse(null);
     }
 
-    public UserDTO login(String username, String password) {
+    public boolean login(String username, String password) {
         User user = userRepository.findByUsername(username).orElse(null);
-
-        //System.out.println(user);
-
         if(user == null) {
-            return new UserDTO("alexa", 1234);
+            return false;
         }
 
-        return this.map(user);
+        return encoder.matches(password, user.getPasswordHash());
     }
 
     private UserDTO map(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         return userDTO;
+    }
+
+    public boolean register(LogInRequest request) {
+        if(userRepository.findByUsername(request.getUsername()).isPresent()
+        || request.getPassword() == null || request.getPassword().isEmpty()) {
+            return false;
+        }
+
+        User user = User.builder()
+                .passwordHash(encoder.encode(request.getPassword()))
+                .username(request.getUsername())
+                .build();
+        userRepository.save(user);
+
+        return true;
+
+
     }
 
 }
