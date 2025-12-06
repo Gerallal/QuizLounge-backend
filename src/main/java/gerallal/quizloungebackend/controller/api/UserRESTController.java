@@ -38,16 +38,10 @@ public class UserRESTController {
             session.setAttribute("username", params.getUsername());
             session.setAttribute("loggedIn", true);
             session.setMaxInactiveInterval(60 * 60);
-
-
-            loginResponse.put("username", "Manni");
-            loginResponse.put("id", 300);
             loginResponse.put("success", true);
 
             return loginResponse;
         }
-        loginResponse.put("username", "");
-        loginResponse.put("id", 0);
         loginResponse.put("success", false);
         return loginResponse;
     }
