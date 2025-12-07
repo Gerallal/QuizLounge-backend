@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class QuizService {
+public class  QuizService {
     private final QuizRepository quizRepository;
 
     public List<Quiz> getAllQuizzes() {return (List<Quiz>) quizRepository.findAll();}
