@@ -11,4 +11,7 @@ import java.util.List;
 public interface QuizRepository extends CrudRepository<Quiz, Long> {
     List<Quiz> findByAuthor(User user);
     List<Quiz> findByCategory(String category);
+    List<Quiz> findByTitle(String title);
+    List<Quiz> findById(long id);
+    List<Quiz> findByIdAndAuthor(long id, User user);
 }

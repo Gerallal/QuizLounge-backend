@@ -15,7 +15,7 @@ public class Question {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private long id;
-    private String questionname;
+    private String questionName;
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
@@ -25,5 +25,6 @@ public class Question {
     //private int rightAnswer; //wird durch ein Attribute von der Entität Answer definiert
 
     @ManyToOne
+    @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 }

@@ -7,9 +7,9 @@ import gerallal.quizloungebackend.repository.QuizRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 @AllArgsConstructor
@@ -18,9 +18,13 @@ public class QuizService {
 
     public List<Quiz> getAllQuizzes() {return (List<Quiz>) quizRepository.findAll();}
 
-    public Optional<Quiz> getQuizById(long id) {return quizRepository.findById(id);}
+    public List<Quiz> getQuizById(long id) {return quizRepository.findById(id);}
+
+    public List<Quiz> getQuizByIdAndAuthor(long id, User author) {return quizRepository.findByIdAndAuthor(id, author);}
 
     public void saveQuiz(Quiz quiz) {quizRepository.save(quiz);}
+
+    public void saveQuizQA(Quiz quiz) {quizRepository.save(quiz);}
 
     public void deleteQuizById(long id) {quizRepository.deleteById(id);}
 
@@ -33,7 +37,7 @@ public class QuizService {
         quizRepository.save(existing);
     }
 
-    public List<Quiz> getQuizzesByAuthor(User author) {
+    public  List<Quiz> getQuizzesByAuthor(User author) {
         return quizRepository.findByAuthor(author);
     }
 
