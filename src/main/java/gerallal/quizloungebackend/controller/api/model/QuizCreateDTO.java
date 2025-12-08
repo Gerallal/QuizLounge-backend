@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuizCreateDTO {
+    private long id;
     String title;
     String description;
     String category;

@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuizCreateQADTO {
+    private long id;
     private String title;
     private String description;
     private String category;

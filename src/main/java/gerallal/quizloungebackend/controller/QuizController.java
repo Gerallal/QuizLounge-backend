@@ -26,11 +26,11 @@ public class QuizController {
     private UserService userService;
 
     @PostMapping("create1")
-    public void createQuiz(@RequestBody QuizCreateDTO quizCreateDTO, HttpSession session) {
+    public QuizCreateDTO createQuiz(@RequestBody QuizCreateDTO quizCreateDTO, HttpSession session) {
 
-        if(session.getAttribute("username") == null) {
-            return;
-        }
+        String username = (String) session.getAttribute("username");
+        if (username == null) throw new RuntimeException("Not logged in");
+
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Quiz quiz = Quiz.builder()
                 .title(quizCreateDTO.getTitle())
@@ -41,28 +41,39 @@ public class QuizController {
 
         quizService.saveQuiz(quiz);
 
+        return new QuizCreateDTO(
+                quiz.getId(),
+                quiz.getTitle(),
+                quiz.getDescription(),
+                quiz.getCategory()
+        );
+
     }
 
     @GetMapping("home/{id}/create1")
     public List<QuizCreateDTO> getMyQuiz(@PathVariable long id) {
         User user = userService.getUserByID(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return quizService.getQuizzesByAuthor(user).stream().map(myQuiz -> new QuizCreateDTO(myQuiz.getTitle(), myQuiz.getDescription(), myQuiz.getCategory())).toList();
+
+        return quizService.getQuizzesByAuthor(user)
+                .stream()
+                .map(myQuiz -> new QuizCreateDTO(
+                        myQuiz.getId(),
+                        myQuiz.getTitle(),
+                        myQuiz.getDescription(),
+                        myQuiz.getCategory()
+                        )).toList();
     }
 
     @PostMapping("create2")
     public void createQuizQA(@RequestBody QuizCreateQADTO quizCreateQADTO, HttpSession session) {
-        if(session.getAttribute("username") == null) {
-            return;
-        }
-        User user = userService.getUserByUsername(session.getAttribute("username").toString());
-        Quiz quiz = new Quiz();
-        quiz.setAuthor(user);
-        quiz.setTitle(quizCreateQADTO.getTitle());
-        quiz.setDescription(quizCreateQADTO.getDescription());
-        quiz.setCategory(quizCreateQADTO.getCategory());
+        Quiz quiz = quizService.getQuizById(quizCreateQADTO.getId()).orElseThrow(() -> new RuntimeException("Quiz not found"));
 
-        quiz.setQuestions(new ArrayList<>());
+        if(quiz.getQuestions() == null) {
+            quiz.setQuestions(new ArrayList<>());
+        } else {
+            quiz.getQuestions().clear();
+        }
 
         for(QuestionDTO questionDTO : quizCreateQADTO.getQuestions()) {
             Question q = new Question();
@@ -87,32 +98,30 @@ public class QuizController {
         quizService.saveQuiz(quiz);
     }
 
-    @GetMapping("home/myQuiz/{id}")
-    public List<QuizCreateQADTO> showAndSolveQuiz(@PathVariable long id) {
-        User user = userService.getUserByID(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return quizService.getQuizByIdAndAuthor(id, user)
-                .stream()
-                .map(myQuiz -> new QuizCreateQADTO(
-                        myQuiz.getTitle(),
-                        myQuiz.getDescription(),
-                        myQuiz.getCategory(),
-                        myQuiz.getQuestions()
-                                .stream()
-                                .map(q -> new QuestionDTO(
-                                        q.getQuestionName(),
-                                        q.getTypeOfQuestion(),
-                                        q.getAnswers()
-                                                .stream()
-                                                .map(a -> new AnswerDTO(
-                                                        a.getAnswerName(),
-                                                        a.isCorrect()
-                                                ))
-                                                .toList()
-                                ))
-                                .toList()
-                ))
-                .toList();
+    @GetMapping("/myQuiz/{id}")
+    public QuizCreateQADTO showAndSolveQuiz(@PathVariable long id) {
+        Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        return new QuizCreateQADTO(
+                quiz.getId(),
+                quiz.getTitle(),
+                quiz.getDescription(),
+                quiz.getCategory(),
+                quiz.getQuestions()
+                        .stream()
+                        .map(q -> new QuestionDTO(
+                                q.getQuestionName(),
+                                q.getTypeOfQuestion(),
+                                q.getAnswers()
+                                        .stream()
+                                        .map(a -> new AnswerDTO(
+                                                a.getAnswerName(),
+                                                a.isCorrect()
+                                        ))
+                                        .toList()
+                        ))
+                        .toList()
+        );
     }
 
 }

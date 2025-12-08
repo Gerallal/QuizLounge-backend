@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 @Service
 @AllArgsConstructor
@@ -18,9 +17,9 @@ public class QuizService {
 
     public List<Quiz> getAllQuizzes() {return (List<Quiz>) quizRepository.findAll();}
 
-    public List<Quiz> getQuizById(long id) {return quizRepository.findById(id);}
+    public Optional<Quiz> getQuizById(long id) {return quizRepository.findById(id);}
 
-    public List<Quiz> getQuizByIdAndAuthor(long id, User author) {return quizRepository.findByIdAndAuthor(id, author);}
+    public Optional<Quiz> getQuizByIdAndAuthor(long id, User author) {return quizRepository.findByIdAndAuthor(id, author);}
 
     public void saveQuiz(Quiz quiz) {quizRepository.save(quiz);}
 
@@ -29,8 +28,7 @@ public class QuizService {
     public void deleteQuizById(long id) {quizRepository.deleteById(id);}
 
     public void updateQuiz(long id, Quiz updatedQuiz) {
-        Quiz existing = quizRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+        Quiz existing = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         existing.setTitle(updatedQuiz.getTitle());
         existing.setDescription(updatedQuiz.getDescription());
         existing.setCategory(updatedQuiz.getCategory());
