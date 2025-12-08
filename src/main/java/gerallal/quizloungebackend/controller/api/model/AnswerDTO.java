@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class AnswerDTO {
-    private String text;
-    private boolean correct;
+    String answerText;
+    boolean correct;
 }
