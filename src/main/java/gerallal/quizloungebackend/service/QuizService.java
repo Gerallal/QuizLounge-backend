@@ -20,7 +20,7 @@ public class QuizService {
 
     public Optional<Quiz> getQuizById(long id) {return quizRepository.findById(id);}
 
-    public void saveQuiz(Quiz quiz) {quizRepository.save(quiz);}
+    public Quiz saveQuiz(Quiz quiz) { return quizRepository.save(quiz);}
 
     public void deleteQuizById(long id) {quizRepository.deleteById(id);}
 

@@ -1,6 +1,7 @@
 package gerallal.quizloungebackend.controller;
 
 
+import gerallal.quizloungebackend.controller.api.model.QuizCreateAnswerDTO;
 import gerallal.quizloungebackend.controller.api.model.QuizCreateDTO;
 import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
@@ -20,10 +21,12 @@ public class QuizController {
     private UserService userService;
 
     @PostMapping("create")
-    public void createQuiz(@RequestBody QuizCreateDTO quizCreateDTO, HttpSession session) {
+    public QuizCreateAnswerDTO createQuiz(@RequestBody QuizCreateDTO quizCreateDTO, HttpSession session) {
 
         if(session.getAttribute("username") == null) {
-            return;
+            return QuizCreateAnswerDTO.builder()
+                    .quizId(-999L)
+                    .successMessage("fail").build();
         }
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Quiz quiz = Quiz.builder()
@@ -33,7 +36,12 @@ public class QuizController {
                 .category(quizCreateDTO.getCategory())
                 .build();
 
-        quizService.saveQuiz(quiz);
+        Quiz q = quizService.saveQuiz(quiz);
+
+        return QuizCreateAnswerDTO.builder()
+                .quizId(q.getId())
+                .successMessage("succes!").build();
+
 
     }
 }
