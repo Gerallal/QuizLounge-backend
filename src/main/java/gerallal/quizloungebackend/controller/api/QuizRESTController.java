@@ -1,4 +1,4 @@
-package gerallal.quizloungebackend.controller;
+package gerallal.quizloungebackend.controller.api;
 
 
 import gerallal.quizloungebackend.controller.api.model.*;
@@ -10,6 +10,7 @@ import gerallal.quizloungebackend.repository.QuizRepository;
 import gerallal.quizloungebackend.service.QuizService;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("/quizlounge/api/quiz")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
-public class QuizController {
+public class QuizRESTController {
     private final QuizRepository quizRepository;
     private QuizService quizService;
     private UserService userService;
@@ -122,6 +123,21 @@ public class QuizController {
                         ))
                         .toList()
         );
+    }
+
+    @PostMapping("/myQuiz/share/{quizId}/{friendId}")
+    public void shareQuiz(@PathVariable Long quizId, @PathVariable Long friendId) {
+        userService.shareQuizWithFriend(quizId, friendId);
+    }
+
+    @DeleteMapping("/myQuiz/{quizId}")
+    public void deleteQuiz(@PathVariable Long quizId) {
+        quizService.deleteQuizById(quizId);
+    }
+
+    @PutMapping("/myQuiz/edit/{quizId}")
+    public Quiz updateQuiz(@PathVariable Long quizId, @RequestBody Quiz updatedQuiz) {
+        return quizService.updateQuiz(quizId, updatedQuiz);
     }
 
 }

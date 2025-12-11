@@ -1,7 +1,9 @@
 package gerallal.quizloungebackend.service;
 
 import gerallal.quizloungebackend.controller.api.model.LogInRequest;
+import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
+import gerallal.quizloungebackend.repository.QuizRepository;
 import gerallal.quizloungebackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final QuizRepository quizRepository;
 
     private final PasswordEncoder encoder;
 
@@ -57,7 +60,22 @@ public class UserService {
 
         return true;
 
-
     }
+
+    public void shareQuizWithFriend(Long quizId, Long friendId) {
+        User receiver = userRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        if (receiver.getQuizzes().contains(quiz)) {
+            throw new RuntimeException("User already has Quiz");
+        }
+
+        receiver.getQuizzes().add(quiz);
+        userRepository.save(receiver);
+    }
+
 
 }

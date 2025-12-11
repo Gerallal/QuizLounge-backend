@@ -1,7 +1,9 @@
 package gerallal.quizloungebackend.controller.api;
 
 import gerallal.quizloungebackend.controller.api.model.LogInRequest;
+import gerallal.quizloungebackend.controller.api.model.QuizCreateDTO;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
+import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
@@ -100,6 +102,18 @@ public class UserRESTController {
                 .toList();
     }
 
+    @GetMapping("/home/received/{userId}")
+    public List<QuizCreateDTO> getReceivedQuizzes(@PathVariable Long userId) {
 
+        User user = userService.getUserByID(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getQuizzes().stream()
+                .map(q -> new QuizCreateDTO(
+                        q.getId(),
+                        q.getTitle(),
+                        q.getDescription(),
+                        q.getCategory()
+                ))
+                .toList();
+    }
 
 }
