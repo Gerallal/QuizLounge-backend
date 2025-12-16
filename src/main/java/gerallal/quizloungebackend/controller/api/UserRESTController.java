@@ -2,6 +2,7 @@ package gerallal.quizloungebackend.controller.api;
 
 import gerallal.quizloungebackend.controller.api.model.LogInRequest;
 import gerallal.quizloungebackend.controller.api.model.QuizCreateDTO;
+import gerallal.quizloungebackend.controller.api.model.QuizCreateQADTO;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
 import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
@@ -68,10 +69,23 @@ public class UserRESTController {
         if (session != null) {
             User user = userService.getUserByUsername((String) session.getAttribute("username"));
             if (user != null) {
-                return new UserDTO(user.getUsername(), user.getId());
+                return new UserDTO(
+                        user.getUsername(),
+                        user.getId(),
+                        user.getReceivedQuizzes()
+                                .stream()
+                                .map(q -> new QuizCreateQADTO(
+                                        q.getId(),
+                                        null,
+                                        q.getTitle(),
+                                        q.getDescription(),
+                                        q.getCategory(),
+                                        null
+                                ))
+                                .toArray(QuizCreateQADTO[]::new));
             }
         }
-        return new UserDTO(null, 0);
+        return new UserDTO(null, 0, null);
     }
 
 
@@ -98,7 +112,21 @@ public class UserRESTController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return user.getFriends().stream()
-                .map(friend -> new UserDTO(friend.getUsername(), friend.getId()))
+                .map(friend -> new UserDTO(
+                        friend.getUsername(),
+                        friend.getId(),
+                        friend.getReceivedQuizzes()
+                                .stream()
+                                .map(q -> new QuizCreateQADTO(
+                                        q.getId(),
+                                        null,
+                                        q.getTitle(),
+                                        q.getDescription(),
+                                        q.getCategory(),
+                                        null
+                                ))
+                                .toArray(QuizCreateQADTO[]::new)
+                ))
                 .toList();
     }
 

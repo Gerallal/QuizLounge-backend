@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class QuizRESTController {
-    private final QuizRepository quizRepository;
+
     private QuizService quizService;
     private UserService userService;
 
@@ -100,11 +100,27 @@ public class QuizRESTController {
     }
 
     @GetMapping("/myQuiz/{id}")
-    public QuizCreateQADTO showAndSolveQuiz(@PathVariable long id) {
+    public QuizCreateQADTO showAndSolveMyQuiz(@PathVariable long id) {
         Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        User author = quiz.getAuthor();
 
         return new QuizCreateQADTO(
                 quiz.getId(),
+                new UserDTO(
+                        author.getUsername(),
+                        author.getId(),
+                        author.getReceivedQuizzes()
+                                .stream()
+                                .map(q -> new QuizCreateQADTO(
+                                        q.getId(),
+                                        null,
+                                        q.getTitle(),
+                                        q.getDescription(),
+                                        q.getCategory(),
+                                        null
+                                ))
+                                .toArray(QuizCreateQADTO[]::new)),
                 quiz.getTitle(),
                 quiz.getDescription(),
                 quiz.getCategory(),

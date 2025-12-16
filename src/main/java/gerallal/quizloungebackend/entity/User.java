@@ -1,6 +1,7 @@
 package gerallal.quizloungebackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import gerallal.quizloungebackend.controller.api.model.QuizCreateQADTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,5 +25,7 @@ public class User {
     private List<FriendRequest> friendRequests;
     @ManyToMany
     private List<Quiz> quizzes;
+    @OneToMany
+    private List<Quiz> receivedQuizzes;
 
 }

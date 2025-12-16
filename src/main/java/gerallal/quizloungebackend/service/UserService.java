@@ -77,5 +77,10 @@ public class UserService {
         userRepository.save(receiver);
     }
 
+    public void deleteFriendById(Long friendId) {
+        User friend = userRepository.findById(friendId).orElseThrow(() -> new RuntimeException("Friend not found"));
+        userRepository.deleteFriendsById(friendId);
+    }
+
 
 }
