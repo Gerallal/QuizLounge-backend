@@ -1,17 +1,22 @@
 package gerallal.quizloungebackend.controller.api.model;
 
+
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnswerDTO {
-    private Long answerId;
-    private String answerText; //brauchen eine Lösung für answerText und text
-    private String text;
-    private boolean correct;
+@Builder
+public class AttemptDTO {
+    private Long attemptId;
+    private Long quizId;
+    private String quizTitle;
+    private List<QuestionDTO> questions;
+
 }
