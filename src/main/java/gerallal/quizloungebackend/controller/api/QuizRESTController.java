@@ -126,18 +126,22 @@ public class QuizRESTController {
                 quiz.getCategory(),
                 quiz.getQuestions()
                         .stream()
-                        .map(q -> new QuestionDTO(
-                                q.getQuestionName(),
-                                q.getTypeOfQuestion(),
-                                q.getAnswers()
-                                        .stream()
-                                        .map(a -> new AnswerDTO(
-                                                a.getAnswerName(),
-                                                a.isCorrect()
-                                        ))
-                                        .toList()
-                        ))
+                        .map(q -> QuestionDTO.builder()
+                                .questionName(q.getQuestionName())
+                                .typeOfQuestion(q.getTypeOfQuestion())
+                                .answers(
+                                        q.getAnswers().stream()
+                                                .map(a -> AnswerDTO.builder()
+                                                        .text(a.getAnswerName())
+                                                        .correct(a.isCorrect())
+                                                        .build()
+                                                )
+                                                .toList()
+                                )
+                                .build()
+                        )
                         .toList()
+
         );
     }
 
