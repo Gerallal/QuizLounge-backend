@@ -29,7 +29,6 @@ public class EvaluationService {
 
         Response response = client.responses().create(params);
 
-        System.out.println(response);
 
         // Erster Output
         var outputItem = response.output().get(0);

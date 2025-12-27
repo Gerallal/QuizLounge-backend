@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AttemptService {
     private final AttemptRepository attemptRepository;
+    private final EvaluationService evaluationService;
 
     public Attempt save(Attempt attempt) {
         return attemptRepository.save(attempt);
@@ -54,9 +55,9 @@ public class AttemptService {
                     result = userAnswers.equals(correctAnswer);
                     break;
                 case "UserInputQuestion":
-                    result = question.getAnswers().stream()
-                            .filter(Answer::isCorrect)
-                            .anyMatch(a -> a.getAnswerName().equalsIgnoreCase(userAnswer.trim()));
+                    result = evaluationService.evaluate(question.getQuestionname().toString(), userAnswer);
+
+                    System.out.println(result);
                     break;
             }
             if (result) {
