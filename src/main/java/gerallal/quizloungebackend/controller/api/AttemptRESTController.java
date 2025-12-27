@@ -157,7 +157,7 @@ public class AttemptRESTController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/attempts/{id}/rating")
+    @PostMapping("/{id}/rating")
     public ResponseEntity<?> ratingQuiz(@PathVariable long id, HttpSession session, @RequestBody Map<String, Integer> allParams) {
         String username = (String) session.getAttribute("username");
         if (username == null) throw new RuntimeException("Not logged in");
@@ -175,6 +175,6 @@ public class AttemptRESTController {
 
         ratingQuizService.saveRating(user.getId(), quiz.getId(), rating);
 
-        return ResponseEntity.ok("Rating saved");
+        return ResponseEntity.ok(Map.of("message", "Rating saved"));
     }
 }

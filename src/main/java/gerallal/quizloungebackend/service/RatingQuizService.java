@@ -23,9 +23,6 @@ public class RatingQuizService {
         User user = userRepository.findById(authorId).orElse(null);
         Quiz quiz = quizRepository.findById(quizId).orElse(null);
 
-        if(ratingQuizRepository.existsByAuthorIdAndQuizId(authorId, quizId)) {
-            throw new IllegalStateException("Quiz already rated by this user");
-        }
 
         RatingQuiz ratingQuiz = RatingQuiz.builder()
                 .author(user)
