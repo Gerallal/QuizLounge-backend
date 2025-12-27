@@ -9,6 +9,7 @@ import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.AttemptService;
 import gerallal.quizloungebackend.service.QuizService;
+import gerallal.quizloungebackend.service.RatingQuizService;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class AttemptRESTController {
     private final QuizService quizService;
     private final AttemptService attemptService;
     private final UserService userService;
+    private final RatingQuizService ratingQuizService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> solve(@PathVariable long id, HttpSession session) {
@@ -153,5 +155,26 @@ public class AttemptRESTController {
                 .build();
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/attempts/{id}/rating")
+    public ResponseEntity<?> ratingQuiz(@PathVariable long id, HttpSession session, @RequestBody Map<String, Integer> allParams) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) throw new RuntimeException("Not logged in");
+        if (allParams == null || allParams.isEmpty()) {
+            return ResponseEntity.badRequest().body("No rating sent");
+        }
+
+        User user = userService.getUserByUsername(session.getAttribute("username").toString());
+        Quiz quiz = quizService.getQuizById(id).orElse(null);
+        Integer rating = allParams.get("rating");
+
+        if (rating < 1 || rating > 5) {
+            return ResponseEntity.badRequest().body("Rating must be between 1 and 5");
+        }
+
+        ratingQuizService.saveRating(user.getId(), quiz.getId(), rating);
+
+        return ResponseEntity.ok("Rating saved");
     }
 }
