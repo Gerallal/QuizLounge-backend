@@ -110,15 +110,13 @@ public class QuizRESTController {
                         author.getId(),
                         author.getReceivedQuizzes()
                                 .stream()
-                                .map(q -> new QuizCreateQADTO(
+                                .map(q -> new QuizCreateDTO(
                                         q.getId(),
-                                        null,
                                         q.getTitle(),
                                         q.getDescription(),
-                                        q.getCategory(),
-                                        null
+                                        q.getCategory()
                                 ))
-                                .toArray(QuizCreateQADTO[]::new)),
+                                .toList()),
                 quiz.getTitle(),
                 quiz.getDescription(),
                 quiz.getCategory(),

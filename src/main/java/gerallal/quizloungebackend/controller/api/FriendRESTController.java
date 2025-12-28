@@ -27,7 +27,14 @@ public class FriendRESTController {
         return new UserDTO(
                 friend.getUsername(),
                 friend.getId(),
-                null
+                friend.getReceivedQuizzes()
+                        .stream()
+                        .map(rq -> new QuizCreateDTO(
+                                rq.getId(),
+                                rq.getTitle(),
+                                rq.getDescription(),
+                                rq.getCategory()
+                        )).toList()
         );
     }
 

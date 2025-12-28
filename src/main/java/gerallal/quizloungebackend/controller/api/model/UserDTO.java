@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -12,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private String username;
     private long id;
-    private QuizCreateQADTO[] receivedQuizzes;
+    private List<QuizCreateDTO> receivedQuizzes;
 
 }

@@ -64,15 +64,13 @@ public class UserRESTController {
                         user.getId(),
                         user.getReceivedQuizzes()
                                 .stream()
-                                .map(q -> new QuizCreateQADTO(
+                                .map(q -> new QuizCreateDTO(
                                         q.getId(),
-                                        null,
                                         q.getTitle(),
                                         q.getDescription(),
-                                        q.getCategory(),
-                                        null
+                                        q.getCategory()
                                 ))
-                                .toArray(QuizCreateQADTO[]::new));
+                                .toList());
             }
         }
         return new UserDTO(null, 0, null);
@@ -107,15 +105,13 @@ public class UserRESTController {
                         friend.getId(),
                         friend.getReceivedQuizzes()
                                 .stream()
-                                .map(q -> new QuizCreateQADTO(
+                                .map(q -> new QuizCreateDTO(
                                         q.getId(),
-                                        null,
                                         q.getTitle(),
                                         q.getDescription(),
-                                        q.getCategory(),
-                                        null
+                                        q.getCategory()
                                 ))
-                                .toArray(QuizCreateQADTO[]::new)
+                                .toList()
                 ))
                 .toList();
     }
