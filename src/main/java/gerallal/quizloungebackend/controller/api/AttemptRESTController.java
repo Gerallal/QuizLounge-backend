@@ -5,18 +5,17 @@ import gerallal.quizloungebackend.controller.api.model.AttemptDTO;
 import gerallal.quizloungebackend.controller.api.model.AttemptResultDTO;
 import gerallal.quizloungebackend.controller.api.model.QuestionDTO;
 import gerallal.quizloungebackend.entity.Attempt;
+import gerallal.quizloungebackend.entity.Question;
 import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
-import gerallal.quizloungebackend.service.AttemptService;
-import gerallal.quizloungebackend.service.QuizService;
-import gerallal.quizloungebackend.service.RatingQuizService;
-import gerallal.quizloungebackend.service.UserService;
+import gerallal.quizloungebackend.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/quizlounge/api/solve")
@@ -28,6 +27,7 @@ public class AttemptRESTController {
     private final AttemptService attemptService;
     private final UserService userService;
     private final RatingQuizService ratingQuizService;
+    private final QuestionService questionService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> solve(@PathVariable long id, HttpSession session) {
@@ -176,5 +176,23 @@ public class AttemptRESTController {
         ratingQuizService.saveRating(user.getId(), quiz.getId(), rating);
 
         return ResponseEntity.ok(Map.of("message", "Rating saved"));
+    }
+    @GetMapping("/{id}/results")
+    public ResponseEntity<?> getResults(@PathVariable long id, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) throw new RuntimeException("Not logged in");
+
+        User user = userService.getUserByUsername(session.getAttribute("username").toString());
+        Quiz quiz = quizService.getQuizById(id).orElse(null);
+        int numberOfQuestions = questionService.getNumberOfQuestions(quiz.getId());
+        Optional<Attempt> attempt = attemptService.getLatestAttemptByUserAndQuiz(user.getId(), quiz.getId());
+
+        AttemptResultDTO resultDTO = AttemptResultDTO.builder()
+                .quizId(attempt.get().getQuiz().getId())
+                .numberOfRightAnswers(attempt.get().getNumberOfRightAnswers())
+                .totalQuestions(numberOfQuestions)
+                .build();
+
+        return ResponseEntity.ok(resultDTO);
     }
 }
