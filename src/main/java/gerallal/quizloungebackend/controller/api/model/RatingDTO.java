@@ -9,4 +9,5 @@ public class RatingDTO {
     private int rating;
     private Long authorId;
     private Long quizId;
+    private double averageRating;
 }

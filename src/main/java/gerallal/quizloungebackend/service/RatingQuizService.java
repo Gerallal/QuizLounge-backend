@@ -32,4 +32,26 @@ public class RatingQuizService {
 
         ratingQuizRepository.save(ratingQuiz);
     }
+
+    public List<RatingDTO> getRatingQuizzesByQuizID(Long quizId) {
+
+        return ratingQuizRepository.findByQuizId(quizId)
+                .stream()
+                .map(ratingQuiz -> {
+                    RatingDTO ratingDTO = new RatingDTO();
+                    ratingDTO.setAuthorId(ratingQuiz.getAuthor().getId());
+                    ratingDTO.setRating(ratingQuiz.getRating());
+                    ratingDTO.setQuizId(ratingQuiz.getQuiz().getId());
+                    return ratingDTO;
+                })
+                .toList();
+
+    }
+
+    public double getAverageRatingByQuizID(Long quizId) {
+        return ratingQuizRepository.findByQuizId(quizId).stream()
+                .mapToInt(RatingQuiz::getRating)
+                .average()
+                .orElse(0.0);
+    }
 }
