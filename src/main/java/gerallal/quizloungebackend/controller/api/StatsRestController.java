@@ -1,12 +1,13 @@
 package gerallal.quizloungebackend.controller.api;
 
 import com.openai.models.beta.realtime.sessions.Session;
+import gerallal.quizloungebackend.controller.api.model.AttemptResultDTO;
 import gerallal.quizloungebackend.controller.api.model.RatingDTO;
+import gerallal.quizloungebackend.controller.api.model.StatsDTO;
+import gerallal.quizloungebackend.entity.Attempt;
 import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
-import gerallal.quizloungebackend.service.QuizService;
-import gerallal.quizloungebackend.service.RatingQuizService;
-import gerallal.quizloungebackend.service.UserService;
+import gerallal.quizloungebackend.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/quizlounge/api")
@@ -25,6 +28,8 @@ public class StatsRestController {
     private final RatingQuizService ratingQuizService;
     private final UserService userService;
     private final QuizService quizService;
+    private final AttemptService attemptService;
+    private final QuestionService questionService;
 
     @GetMapping("/stats")
     public List<RatingDTO> getStats(HttpSession session){
@@ -52,5 +57,46 @@ public class StatsRestController {
         }
 
         return result;
+    }
+
+    @GetMapping("/mystats")
+    public List<StatsDTO> getMyStats(HttpSession session){
+        String username = "Basti";
+
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");
+        }
+
+        User user = userService.getUserByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+        }
+
+        List<Quiz> quiz = quizService.getQuizzesByAuthor(user);
+
+        Map<Long, Integer> questionCountByQuizId =
+                quiz.stream()
+                        .collect(Collectors.toMap(
+                                Quiz::getId,
+                                q -> questionService.getNumberOfQuestions(q.getId())
+                        ));
+
+        List<StatsDTO> results =
+                quiz.stream()
+                        .flatMap(q ->
+                                attemptService
+                                        .findAllAttemptsByQuizId(q.getId())
+                                        .stream()
+                        )
+                        .filter(Attempt::isFinished)
+                        .map(attempt -> new StatsDTO(
+                                attempt.getQuiz().getId(),
+                                attempt.getUser().getUsername(),
+                                attempt.getNumberOfRightAnswers(),
+                                questionCountByQuizId.get(attempt.getQuiz().getId())
+                        ))
+                        .toList();
+
+         return results;
     }
 }

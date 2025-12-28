@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +22,19 @@ public class AttemptService {
     public Optional<Attempt> findAttemptById(Long id) {
         return attemptRepository.findById(id);
     }
+
+    public List<Attempt> findAllAttemptsByQuizId(Long quizId) {
+        return attemptRepository.findByQuizId(quizId);
+    }
+
+    public List<String> getUsernamesOfFinishedAttemptsForQuiz(Long quizId) {
+        return attemptRepository.findByQuizIdAndFinishedTrue(quizId)
+                .stream()
+                .map(a -> a.getUser().getUsername())
+                .toList();
+    }
+
+
 
 
     public Optional<Attempt> getLatestAttemptByUserAndQuiz(Long userId, Long quizId) {

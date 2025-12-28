@@ -17,7 +17,7 @@ public class Attempt implements Comparable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @ManyToOne
     private User user;
 
     @ManyToOne
