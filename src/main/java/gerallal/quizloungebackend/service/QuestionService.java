@@ -35,4 +35,8 @@ public class QuestionService {
         answerRepository.saveAll(question.getAnswers());
 
     }
+
+    public int getNumberOfQuestions(Long quizId) {
+        return questionRepository.countByQuizId(quizId);
+    }
 }
