@@ -28,7 +28,7 @@ public class StatsRestController {
 
     @GetMapping("/stats")
     public List<RatingDTO> getStats(HttpSession session){
-        String username = "Basti";
+        String username = (String) session.getAttribute("username");
 
         if (username == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");
