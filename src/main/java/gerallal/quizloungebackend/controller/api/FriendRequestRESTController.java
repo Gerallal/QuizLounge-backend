@@ -9,11 +9,9 @@ import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jmx.export.metadata.ManagedOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +48,7 @@ public class FriendRequestRESTController {
         User user = userService.getUserByUsername(username);
         List<FriendRequest> friendRequests = friendRequestService.findByReceiverAndNotAccepted(user);
         List<FriendRequestDTO> friendRequestDTOS =  friendRequests.stream().map(FriendRequestService::map).toList();
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put("data", friendRequestDTOS);
         return new ResponseEntity<> (response, HttpStatus.OK);
     }

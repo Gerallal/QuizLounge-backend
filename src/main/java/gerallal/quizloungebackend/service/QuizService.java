@@ -28,7 +28,6 @@ public class QuizService {
     public void saveQuizQA(Quiz quiz) {quizRepository.save(quiz);}
 
     public void deleteQuizById(long id) {
-        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         quizRepository.deleteById(id);
     }
 

@@ -17,6 +17,7 @@ import java.util.Optional;
 public class FriendRequestService {
     UserRepository userRepository;
     FriendRequestRepository friendRequestRepository;
+
     @Transactional
     public void deleteFriend(Long userId, Long friendId) {
         User user = userRepository.findById(userId).orElseThrow();
@@ -42,7 +43,7 @@ public class FriendRequestService {
             friendRequestRepository.save(friendRequest);
             return true;
         }
-    return false;
+        return false;
     }
 
     public List<FriendRequest> findByReceiver(User receiver){
@@ -54,11 +55,10 @@ public class FriendRequestService {
     }
 
     public static FriendRequestDTO map(FriendRequest friendRequest){
-        FriendRequestDTO friendRequestDTO = FriendRequestDTO.builder()
+        return FriendRequestDTO.builder()
                 .id(friendRequest.getId())
                 .sender(friendRequest.getSender().getUsername())
                 .build();
-        return friendRequestDTO;
     }
 
     public boolean acceptFriendRequest(String receiverName, Long frqID) {

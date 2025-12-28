@@ -6,11 +6,9 @@ import gerallal.quizloungebackend.entity.Answer;
 import gerallal.quizloungebackend.entity.Question;
 import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
-import gerallal.quizloungebackend.repository.QuizRepository;
 import gerallal.quizloungebackend.service.QuizService;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -67,7 +65,7 @@ public class QuizRESTController {
     }
 
     @PostMapping("create2")
-    public void createQuizQA(@RequestBody QuizCreateQADTO quizCreateQADTO, HttpSession session) {
+    public void createQuizQA(@RequestBody QuizCreateQADTO quizCreateQADTO) {
         Quiz quiz = quizService.getQuizById(quizCreateQADTO.getId()).orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         if(quiz.getQuestions() == null) {
@@ -152,8 +150,34 @@ public class QuizRESTController {
     }
 
     @PutMapping("/myQuiz/edit/{quizId}")
-    public Quiz updateQuiz(@PathVariable Long quizId, @RequestBody Quiz updatedQuiz) {
-        return quizService.updateQuiz(quizId, updatedQuiz);
+    public void updateQuiz(@PathVariable Long quizId, @RequestBody QuizCreateQADTO updatedQuiz, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) throw new RuntimeException("Ausgeloggt");
+        Quiz quiz = quizService.getQuizById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        quiz.setTitle(updatedQuiz.getTitle());
+        quiz.setDescription(updatedQuiz.getDescription());
+        quiz.setCategory(updatedQuiz.getCategory());
+
+        quiz.getQuestions().clear();
+
+        for(QuestionDTO questionDTO : updatedQuiz.getQuestions()) {
+            Question q = new Question();
+            q.setQuestionName(questionDTO.getQuestionName());
+            q.setTypeOfQuestion(questionDTO.getTypeOfQuestion());
+            q.setQuiz(quiz);
+            q.setAnswers(new ArrayList<>());
+
+            for(AnswerDTO answerDTO : questionDTO.getAnswers()) {
+                Answer a = new Answer();
+                a.setAnswerName(answerDTO.getText());
+                a.setCorrect(answerDTO.isCorrect());
+                a.setQuestion(q);
+                q.getAnswers().add(a);
+            }
+            quiz.getQuestions().add(q);
+        }
+        quizService.saveQuiz(quiz);
     }
 
 }

@@ -1,7 +1,6 @@
 package gerallal.quizloungebackend.controller.api;
 
 import gerallal.quizloungebackend.controller.api.model.*;
-import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.QuizService;
 import gerallal.quizloungebackend.service.UserService;
@@ -47,22 +46,6 @@ public class FriendRESTController {
                         q.getCategory()
                 ))
                 .toList();
-    }
-
-
-    @GetMapping("/friend/{id}")
-    public List<QuizCreateDTO> showFriendProfile(@PathVariable long id) {
-        User user = userService.getUserByID(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return quizService.getQuizzesByAuthor(user)
-                .stream()
-                .map(myQuiz -> new QuizCreateDTO(
-                        myQuiz.getId(),
-                        myQuiz.getTitle(),
-                        myQuiz.getDescription(),
-                        myQuiz.getCategory()
-                )).toList();
     }
 
     @DeleteMapping("/friend/{id}")

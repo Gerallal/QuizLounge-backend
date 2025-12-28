@@ -6,8 +6,6 @@ import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.repository.QuizRepository;
 import gerallal.quizloungebackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
@@ -78,7 +76,6 @@ public class UserService {
     }
 
     public void deleteFriendById(Long friendId) {
-        User friend = userRepository.findById(friendId).orElseThrow(() -> new RuntimeException("Friend not found"));
         userRepository.deleteFriendsById(friendId);
     }
 

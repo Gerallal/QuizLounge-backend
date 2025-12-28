@@ -4,11 +4,9 @@ import gerallal.quizloungebackend.controller.api.model.LogInRequest;
 import gerallal.quizloungebackend.controller.api.model.QuizCreateDTO;
 import gerallal.quizloungebackend.controller.api.model.QuizCreateQADTO;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
-import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +21,6 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UserRESTController {
     private final UserService userService;
-
-
-
-/*    @PostMapping("loginOld")
-    public UserDTO loginOld(@RequestBody UserDTO params) {
-        return userService.login(params.getUsername(), params.getPassword());
-    }*/
 
     @PostMapping("login")
     public Map<String, Object> login(@RequestBody LogInRequest params, HttpServletRequest request) {
@@ -59,7 +50,6 @@ public class UserRESTController {
             //return (String) session.getAttribute("username");
         }
         return Map.of("username", null);
-        //return null;
     }
 
     @GetMapping("current-user/zwei")
