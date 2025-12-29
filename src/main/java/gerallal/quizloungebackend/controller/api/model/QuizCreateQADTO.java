@@ -17,5 +17,6 @@ public class QuizCreateQADTO {
     private String title;
     private String description;
     private String category;
-    List<QuestionDTO> questions;
+    private List<QuestionDTO> questions;
+    private AttemptDTO attempt;
 }

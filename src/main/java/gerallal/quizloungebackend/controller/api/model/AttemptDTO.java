@@ -14,9 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class AttemptDTO {
+
     private Long attemptId;
     private Long quizId;
-    private String quizTitle;
+    //private String quizTitle;
     private List<QuestionDTO> questions;
 
 }

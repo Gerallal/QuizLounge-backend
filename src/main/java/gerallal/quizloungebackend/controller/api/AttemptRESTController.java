@@ -32,7 +32,10 @@ public class AttemptRESTController {
     @GetMapping("/{id}")
     public ResponseEntity<?> solve(@PathVariable long id, HttpSession session) {
         String username = (String) session.getAttribute("username");
-        if (username == null) throw new RuntimeException("Not logged in");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Quiz quiz = quizService.getQuizById(id).orElse(null);
@@ -47,7 +50,7 @@ public class AttemptRESTController {
         AttemptDTO dto = AttemptDTO.builder()
                 .attemptId(attempt.getId())
                 .quizId(quiz.getId())
-                .quizTitle(quiz.getTitle())
+                //.quizTitle(quiz.getTitle())
                 .questions(
                         quiz.getQuestions().stream()
                                 .map(q -> QuestionDTO.builder()
@@ -75,7 +78,10 @@ public class AttemptRESTController {
     @GetMapping("/attempts/{id}")
     public ResponseEntity<?> solveQuiz(@PathVariable long id, HttpSession session) {
         String username = (String) session.getAttribute("username");
-        if (username == null) throw new RuntimeException("Not logged in");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Attempt attempt = attemptService.findAttemptById(id).orElse(null);
@@ -97,7 +103,7 @@ public class AttemptRESTController {
         AttemptDTO dto = AttemptDTO.builder()
                 .attemptId(attempt.getId())
                 .quizId(quiz.getId())
-                .quizTitle(quiz.getTitle())
+                //.quizTitle(quiz.getTitle())
                 .questions(
                         quiz.getQuestions().stream()
                                 .map(q -> QuestionDTO.builder()
@@ -129,7 +135,10 @@ public class AttemptRESTController {
             HttpSession session) {
 
         String username = (String) session.getAttribute("username");
-        if (username == null) throw new RuntimeException("Not logged in");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
 
         Attempt attempt = attemptService.findAttemptById(id).orElse(null);
         if (attempt == null) {
@@ -160,7 +169,10 @@ public class AttemptRESTController {
     @PostMapping("/{id}/rating")
     public ResponseEntity<?> ratingQuiz(@PathVariable long id, HttpSession session, @RequestBody Map<String, Integer> allParams) {
         String username = (String) session.getAttribute("username");
-        if (username == null) throw new RuntimeException("Not logged in");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
         if (allParams == null || allParams.isEmpty()) {
             return ResponseEntity.badRequest().body("No rating sent");
         }
@@ -180,7 +192,10 @@ public class AttemptRESTController {
     @GetMapping("/{id}/results")
     public ResponseEntity<?> getResults(@PathVariable long id, HttpSession session) {
         String username = (String) session.getAttribute("username");
-        if (username == null) throw new RuntimeException("Not logged in");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Quiz quiz = quizService.getQuizById(id).orElse(null);

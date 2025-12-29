@@ -101,6 +101,14 @@ public class QuizRESTController {
         Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         User author = quiz.getAuthor();
 
+        AttemptDTO attemptDTO = quiz.getAttempts().isEmpty()
+                ? null
+                : new AttemptDTO(
+                quiz.getAttempts().get(quiz.getAttempts().size() - 1).getId(),
+                quiz.getId(),
+                null
+        );
+
         return new QuizCreateQADTO(
                 quiz.getId(),
                 new UserDTO(
@@ -134,7 +142,8 @@ public class QuizRESTController {
                                         ))
                                         .toList()
                         ))
-                        .toList()
+                        .toList(),
+                attemptDTO
         );
     }
 
