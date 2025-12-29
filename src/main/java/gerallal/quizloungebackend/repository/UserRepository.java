@@ -10,4 +10,5 @@ import java.util.Optional;
 @RepositoryDefinition(domainClass = User.class, idClass = Long.class)
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByUsername(String username);
+    void deleteFriendsById(Long id);
 }

@@ -15,8 +15,10 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class FriendRequestService {
+
     UserRepository userRepository;
     FriendRequestRepository friendRequestRepository;
+
     @Transactional
     public void deleteFriend(Long userId, Long friendId) {
         User user = userRepository.findById(userId).orElseThrow();

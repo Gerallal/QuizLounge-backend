@@ -52,7 +52,7 @@ public class AttemptRESTController {
                         quiz.getQuestions().stream()
                                 .map(q -> QuestionDTO.builder()
                                         .questionId(q.getId())
-                                        .questionText(q.getQuestionname())
+                                        .questionText(q.getQuestionName())
                                         .questionType(q.getTypeOfQuestion())
                                         .quizId(quiz.getId())
                                         .answers(
@@ -102,7 +102,7 @@ public class AttemptRESTController {
                         quiz.getQuestions().stream()
                                 .map(q -> QuestionDTO.builder()
                                         .questionId(q.getId())
-                                        .questionText(q.getQuestionname()) // wichtig!
+                                        .questionText(q.getQuestionName()) // wichtig!
                                         .questionType(q.getTypeOfQuestion())
                                         .quizId(q.getQuiz().getId())
                                         .answers(

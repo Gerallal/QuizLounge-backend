@@ -55,7 +55,7 @@ public class AttemptService {
                     result = userAnswers.equals(correctAnswer);
                     break;
                 case "UserInputQuestion":
-                    result = evaluationService.evaluate(question.getQuestionname().toString(), userAnswer);
+                    result = evaluationService.evaluate(question.getQuestionName().toString(), userAnswer);
 
                     System.out.println(result);
                     break;

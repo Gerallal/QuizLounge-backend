@@ -25,7 +25,7 @@ public class QuestionService {
                 .answers(questionDTO.getAnswers().stream()
                         .map(AnswerService::map)
                         .toList())
-                .questionname(questionDTO.getQuestionText())
+                .questionName(questionDTO.getQuestionText())
                 .build();
         question.getAnswers().forEach(answer -> answer.setQuestion(question));
 
