@@ -23,5 +23,6 @@ public class User {
     private List<FriendRequest> friendRequests;
     @ManyToMany
     private List<Quiz> quizzes;
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Quiz> receivedQuizzes;
 }

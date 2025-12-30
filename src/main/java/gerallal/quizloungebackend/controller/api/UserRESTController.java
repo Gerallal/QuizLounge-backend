@@ -1,11 +1,11 @@
 package gerallal.quizloungebackend.controller.api;
 
 import gerallal.quizloungebackend.controller.api.model.LogInRequest;
+import gerallal.quizloungebackend.controller.api.model.QuizCreateDTO;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,10 +66,21 @@ public class UserRESTController {
         if (session != null) {
             User user = userService.getUserByUsername((String) session.getAttribute("username"));
             if (user != null) {
-                return new UserDTO(user.getUsername(), user.getId());
+                return new UserDTO(
+                        user.getUsername(),
+                        user.getId(),
+                        user.getReceivedQuizzes()
+                                .stream()
+                                .map(q -> new QuizCreateDTO(
+                                        q.getId(),
+                                        q.getTitle(),
+                                        q.getDescription(),
+                                        q.getCategory()
+                                ))
+                                .toList());
             }
         }
-        return new UserDTO(null, 0);
+        return new UserDTO(null, 0, null);
     }
 
 
@@ -96,10 +107,35 @@ public class UserRESTController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return user.getFriends().stream()
-                .map(friend -> new UserDTO(friend.getUsername(), friend.getId()))
+                .map(friend -> new UserDTO(
+                        friend.getUsername(),
+                        friend.getId(),
+                        friend.getReceivedQuizzes()
+                                .stream()
+                                .map(q -> new QuizCreateDTO(
+                                        q.getId(),
+                                        q.getTitle(),
+                                        q.getDescription(),
+                                        q.getCategory()
+                                ))
+                                .toList()
+                ))
                 .toList();
     }
 
+    @GetMapping("/home/received/{userId}")
+    public List<QuizCreateDTO> getReceivedQuizzes(@PathVariable Long userId) {
 
+        User user = userService.getUserByID(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getQuizzes()
+                .stream()
+                .map(q -> new QuizCreateDTO(
+                        q.getId(),
+                        q.getTitle(),
+                        q.getDescription(),
+                        q.getCategory()
+                ))
+                .toList();
+    }
 
 }

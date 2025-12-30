@@ -5,15 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizCreateDTO {
+public class QuizCreateQADTO {
     private long id;
-    String title;
-    String description;
-    String category;
+    private UserDTO author;
+    private String title;
+    private String description;
+    private String category;
+    private List<QuestionDTO> questions;
+    private AttemptDTO attempt;
 }
