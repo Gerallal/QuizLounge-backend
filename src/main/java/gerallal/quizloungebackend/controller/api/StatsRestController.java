@@ -1,7 +1,5 @@
 package gerallal.quizloungebackend.controller.api;
 
-import com.openai.models.beta.realtime.sessions.Session;
-import gerallal.quizloungebackend.controller.api.model.AttemptResultDTO;
 import gerallal.quizloungebackend.controller.api.model.RatingDTO;
 import gerallal.quizloungebackend.controller.api.model.StatsDTO;
 import gerallal.quizloungebackend.entity.Attempt;
@@ -58,9 +56,48 @@ public class StatsRestController {
 
         return result;
     }
+    @GetMapping("/myStats")
+    public List<StatsDTO> getMyStats(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");
+        }
 
-    @GetMapping("/mystats")
-    public List<StatsDTO> getMyStats(HttpSession session){
+        User user = userService.getUserByUsername(username);
+        List<Attempt> getAllOfMyAttempts = attemptService.getAllQuizzesForUser(user.getId());
+
+        List<Quiz> quiz = getAllOfMyAttempts.stream()
+                .map(Attempt::getQuiz)
+                .distinct()
+                .toList();
+
+
+        Map<Long, Integer> questionCountByQuizId =
+                quiz.stream()
+                        .collect(Collectors.toMap(
+                                Quiz::getId,
+                                q -> questionService.getNumberOfQuestions(q.getId())
+                        ));
+
+        List<StatsDTO> results =
+                getAllOfMyAttempts.stream()
+                        .map(attempt -> new StatsDTO(
+                                attempt.getQuiz().getId(),
+                                user.getUsername(),
+                                attempt.getNumberOfRightAnswers(),
+                                questionCountByQuizId.get(attempt.getQuiz().getId()),
+                                attempt.getQuiz().getTitle(),
+                                attempt.getEndTime()
+                        ))
+                        .toList();
+
+        return results;
+
+
+    }
+
+    @GetMapping("/statsOfMyQuizzes")
+    public List<StatsDTO> getStatsOfMyQuizzes(HttpSession session){
         String username = "Basti";
 
         if (username == null) {

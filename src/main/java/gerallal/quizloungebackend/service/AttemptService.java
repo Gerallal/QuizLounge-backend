@@ -34,6 +34,14 @@ public class AttemptService {
                 .toList();
     }
 
+    public List<Attempt> getAllQuizzesForUser(Long userId) {
+        return attemptRepository.findByUserIdAndFinishedTrue(userId)
+                .stream()
+                .filter(a -> a.getUser().getId().equals(userId))
+                .toList();
+
+    }
+
 
 
 
