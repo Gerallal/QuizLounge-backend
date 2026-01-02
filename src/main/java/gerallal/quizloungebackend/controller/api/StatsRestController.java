@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/quizlounge/api")
+@RequestMapping("/quizlounge/api/stats")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class StatsRestController {
@@ -93,7 +93,9 @@ public class StatsRestController {
                                 attempt.getQuiz().getId(),
                                 attempt.getUser().getUsername(),
                                 attempt.getNumberOfRightAnswers(),
-                                questionCountByQuizId.get(attempt.getQuiz().getId())
+                                questionCountByQuizId.get(attempt.getQuiz().getId()),
+                                attempt.getQuiz().getTitle(),
+                                attempt.getEndTime()
                         ))
                         .toList();
 
