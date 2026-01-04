@@ -25,10 +25,10 @@ public class QuizRESTController {
     private UserService userService;
 
     @PostMapping("create1")
-    public QuizCreateAnswerDTO createQuiz(@RequestBody QuizCreateDTO quizCreateDTO, HttpSession session) {
+    public QuizCreateDTO createQuiz(@RequestBody QuizCreateDTO quizCreateDTO, HttpSession session) {
 
         if(session.getAttribute("username") == null) {
-            return QuizCreateAnswerDTO.builder()
+            return QuizCreateDTO.builder()
                     .quizId(-999L)
                     .successMessage("fail").build();
         }
@@ -42,7 +42,7 @@ public class QuizRESTController {
 
         Quiz q = quizService.saveQuiz(quiz);
 
-        return QuizCreateAnswerDTO.builder()
+        return QuizCreateDTO.builder()
                 .quizId(q.getId())
                 .successMessage("succes!").build();
     }
@@ -63,7 +63,7 @@ public class QuizRESTController {
     }
 
     @PostMapping("create2")
-    public void createQuizQA(@RequestBody QuizCreateQADTO quizCreateQADTO) {
+    public void createQuizQA(@RequestBody QuizCreateDTO quizCreateQADTO) {
         Quiz quiz = quizService.getQuizById(quizCreateQADTO.getId()).orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         if(quiz.getQuestions() == null) {
@@ -96,7 +96,7 @@ public class QuizRESTController {
     }
 
     @GetMapping("/myQuiz/{id}")
-    public QuizCreateQADTO showAndSolveMyQuiz(@PathVariable long id) {
+    public QuizCreateDTO showAndSolveMyQuiz(@PathVariable long id) {
 
         Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         User author = quiz.getAuthor();
@@ -109,7 +109,7 @@ public class QuizRESTController {
                 null
         );
 
-        return new QuizCreateQADTO(
+        return new QuizCreateDTO(
                 quiz.getId(),
                 new UserDTO(
                         author.getUsername(),
@@ -158,7 +158,7 @@ public class QuizRESTController {
     }
 
     @PutMapping("/myQuiz/edit/{quizId}")
-    public void updateQuiz(@PathVariable Long quizId, @RequestBody QuizCreateQADTO updatedQuiz, HttpSession session) {
+    public void updateQuiz(@PathVariable Long quizId, @RequestBody QuizCreateDTO updatedQuiz, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) throw new RuntimeException("Ausgeloggt");
         Quiz quiz = quizService.getQuizById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found"));

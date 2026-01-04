@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,7 +13,44 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 public class QuizCreateDTO {
     private long id;
-    String title;
-    String description;
-    String category;
+    private UserDTO author;
+    private String title;
+    private String description;
+    private String category;
+    private List<QuestionDTO> questions;
+    private AttemptDTO attempt;
+    private String successMessage;
+    private Long quizId;
+
+    public QuizCreateDTO(long id,
+                           String title,
+                           String description,
+                           String category) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+    }
+
+    public QuizCreateDTO(long id,
+                         UserDTO author,
+                         String title,
+                         String description,
+                         String category,
+                         List<QuestionDTO> questions,
+                         AttemptDTO attempt) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.questions = questions;
+        this.attempt = attempt;
+    }
+
+    public QuizCreateDTO(String successMessage,
+                         Long quizId) {
+        this.successMessage = successMessage;
+        this.quizId = quizId;
+    }
 }
