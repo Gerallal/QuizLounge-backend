@@ -22,7 +22,7 @@ public class Question {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
-    private String typeOfQuestion;
+    private QuestionType typeOfQuestion;
 
     //private int rightAnswer; //wird durch ein Attribute von der Entität Answer definiert
 

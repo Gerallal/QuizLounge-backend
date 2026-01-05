@@ -7,6 +7,7 @@ import gerallal.quizloungebackend.repository.QuizRepository;
 import gerallal.quizloungebackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -25,7 +26,12 @@ public class  QuizService {
 
     public Quiz saveQuiz(Quiz quiz) { return quizRepository.save(quiz);}
 
-    public void deleteQuizById(long id) {quizRepository.deleteById(id);}
+    @Transactional
+    public void deleteQuizById(long quizId) {
+        userRepository.deleteQuizFromUserQuizzes(quizId);
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new EntityNotFoundException("Quiz not found"));
+        quizRepository.delete(quiz);
+    }
 
     public Quiz updateQuiz(long id, Quiz updatedQuiz) {
         Quiz existing = quizRepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));

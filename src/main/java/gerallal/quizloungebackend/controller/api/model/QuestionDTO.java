@@ -1,5 +1,6 @@
 package gerallal.quizloungebackend.controller.api.model;
 
+import gerallal.quizloungebackend.entity.QuestionType;
 import lombok.*;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public class QuestionDTO {
     Long questionId;
     String questionText;
-    String questionType;
+    QuestionType questionType;
     Long quizId;
     List<AnswerDTO> answers;
 }

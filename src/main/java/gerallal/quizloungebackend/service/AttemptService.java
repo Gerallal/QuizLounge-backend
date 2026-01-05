@@ -42,9 +42,6 @@ public class AttemptService {
 
     }
 
-
-
-
     public Optional<Attempt> getLatestAttemptByUserAndQuiz(Long userId, Long quizId) {
         return attemptRepository.findTopByUserIdAndQuizIdOrderByEndTimeDesc(userId, quizId);
     }
@@ -56,11 +53,11 @@ public class AttemptService {
             boolean result = false;
 
             switch (question.getTypeOfQuestion()) {
-                case "SingleAnswerQuestion":
+                case SingleAnswerQuestion:
                     result = question.getAnswers().stream()
                             .anyMatch(a -> a.isCorrect() && a.getAnswerName().equals(userAnswer));
                     break;
-                case "MultipleAnswerQuestion":
+                case MultipleAnswerQuestion:
                     Set<String> userAnswers = Arrays.stream(userAnswer.split(","))
                             .map(String::trim)
                             .collect(Collectors.toSet());
@@ -72,7 +69,7 @@ public class AttemptService {
 
                     result = userAnswers.equals(correctAnswer);
                     break;
-                case "UserInputQuestion":
+                case UserInputQuestion:
                     result = evaluationService.evaluate(question.getQuestionName().toString(), userAnswer);
 
                     System.out.println(result);

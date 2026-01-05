@@ -2,10 +2,7 @@ package gerallal.quizloungebackend.controller.api;
 
 
 import gerallal.quizloungebackend.controller.api.model.*;
-import gerallal.quizloungebackend.entity.Answer;
-import gerallal.quizloungebackend.entity.Question;
-import gerallal.quizloungebackend.entity.Quiz;
-import gerallal.quizloungebackend.entity.User;
+import gerallal.quizloungebackend.entity.*;
 import gerallal.quizloungebackend.service.QuizService;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
@@ -77,7 +74,6 @@ public class QuizRESTController {
             q.setQuestionName(questionDTO.getQuestionText());
             q.setTypeOfQuestion(questionDTO.getQuestionType());
             q.setQuiz(quiz);
-
             q.setAnswers(new ArrayList<>());
 
             for(AnswerDTO answerDTO : questionDTO.getAnswers()) {
@@ -88,6 +84,8 @@ public class QuizRESTController {
 
                 q.getAnswers().add(a);
             }
+
+            validateQuestion(q);
 
             quiz.getQuestions().add(q);
         }
@@ -183,8 +181,47 @@ public class QuizRESTController {
                 a.setQuestion(q);
                 q.getAnswers().add(a);
             }
+
+            validateQuestion(q);
+
             quiz.getQuestions().add(q);
         }
         quizService.saveQuiz(quiz);
     }
+
+    private void validateQuestion(Question q) {
+
+        long correctCount = q.getAnswers().stream()
+                .filter(Answer::isCorrect)
+                .count();
+
+        switch (q.getTypeOfQuestion()) {
+
+            case SingleAnswerQuestion -> {
+                if (correctCount != 1) {
+                    throw new IllegalArgumentException(
+                            "Single answer question must have exactly one correct answer"
+                    );
+                }
+            }
+
+            case MultipleAnswerQuestion -> {
+                if (correctCount < 1) {
+                    throw new IllegalArgumentException(
+                            "Multiple answer question must have at least one correct answer"
+                    );
+                }
+            }
+
+            case UserInputQuestion -> {
+                if (q.getAnswers().size() != 1) {
+                    throw new IllegalArgumentException(
+                            "User input question must have exactly one answer"
+                    );
+                }
+                q.getAnswers().get(0).setCorrect(true);
+            }
+        }
+    }
+
 }
