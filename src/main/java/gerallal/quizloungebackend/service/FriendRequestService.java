@@ -88,8 +88,8 @@ public class FriendRequestService {
         sender.getFriends().add(receiver);
         userRepository.save(receiver);
         userRepository.save(sender);
+        friendRequestRepository.deleteById(frq.getId());
         return true;
-
     }
 
     public Optional<FriendRequest> getFriendRequestByID(Long id){
