@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import gerallal.quizloungebackend.controller.api.model.UserDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -78,8 +79,13 @@ public class UserService {
         userRepository.save(receiver);
     }
 
-    public void deleteFriendById(Long friendId) {
-        userRepository.deleteFriendsById(friendId);
+    @Transactional
+    public void deleteFriendById(User user, User friend) {
+        user.getFriends().remove(friend);
+        friend.getFriends().remove(user);
+        userRepository.save(user);
+        userRepository.save(friend);
+//        userRepository.deleteFriendsById(friendId);
     }
 
 }

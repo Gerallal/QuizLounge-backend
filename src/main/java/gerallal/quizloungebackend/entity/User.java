@@ -21,6 +21,8 @@ public class User {
     private List<User> friends;
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendRequest> friendRequests;
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FriendRequest> senderFriendRequests;
     @ManyToMany
     private List<Quiz> quizzes;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

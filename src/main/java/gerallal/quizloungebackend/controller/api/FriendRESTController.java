@@ -8,6 +8,8 @@ import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -57,7 +59,21 @@ public class FriendRESTController {
     }
 
     @DeleteMapping("/friend/{id}")
-    public void deleteFriend(@PathVariable long id) {
-        userService.deleteFriendById(id);
+    public void deleteFriend(@PathVariable long id, HttpServletRequest request) {
+        // es wäre besser die User zu holen aus den Java Arrays die Freunde zu entfernen
+        //dann  userService.save()
+        HttpSession session = request.getSession(false);
+
+
+        User user = userService.getUserByUsername((String) session.getAttribute("username"));
+
+        User friend = userService.getUserByID(id).orElse(null);
+
+        userService.deleteFriendById(user, friend);
+//        user.getFriends().remove(friend);
+//        friend.getFriends().remove(user);
+//        userService.save(user);
+//        userService.save(friend);
+
     }
 }
