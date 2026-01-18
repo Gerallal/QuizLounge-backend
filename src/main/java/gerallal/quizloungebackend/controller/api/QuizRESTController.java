@@ -136,7 +136,7 @@ public class QuizRESTController {
                                         .map(a -> new AnswerDTO(
                                                 a.getId(),
                                                 a.getAnswerName(),
-                                                a.isCorrect()
+                                                false
                                         ))
                                         .toList()
                         ))
