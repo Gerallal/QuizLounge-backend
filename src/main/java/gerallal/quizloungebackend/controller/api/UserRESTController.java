@@ -21,13 +21,6 @@ import java.util.Map;
 public class UserRESTController {
     private final UserService userService;
 
-
-
-/*    @PostMapping("loginOld")
-    public UserDTO loginOld(@RequestBody UserDTO params) {
-        return userService.login(params.getUsername(), params.getPassword());
-    }*/
-
     @PostMapping("login")
     public Map<String, Object> login(@RequestBody LogInRequest params, HttpServletRequest request) {
 
@@ -56,7 +49,6 @@ public class UserRESTController {
             //return (String) session.getAttribute("username");
         }
         return Map.of("username", null);
-        //return null;
     }
 
     @GetMapping("current-user/zwei")

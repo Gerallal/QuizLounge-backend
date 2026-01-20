@@ -3,6 +3,7 @@ package gerallal.quizloungebackend.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.Duration;
@@ -43,7 +44,7 @@ public class Attempt implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(@NotNull Object o) {
         if (o instanceof Attempt) {
             if (this.getDuration() == null || ((Attempt) o).getDuration() == null) {
                 return -1;

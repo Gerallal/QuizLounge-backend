@@ -21,10 +21,6 @@ public class UserService {
     private final QuizRepository quizRepository;
     private final PasswordEncoder encoder;
 
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
     public Optional<User> getUserByID(long id) {
         return userRepository.findById(id);
     }

@@ -12,7 +12,5 @@ import java.util.Optional;
 public interface QuizRepository extends CrudRepository<Quiz, Long> {
     List<Quiz> findByAuthor(User user);
     List<Quiz> findByCategory(String category);
-    List<Quiz> findByTitle(String title);
     Optional<Quiz> findById(long id);
-    Optional<Quiz> findByIdAndAuthor(long id, User user);
 }

@@ -5,7 +5,6 @@ import gerallal.quizloungebackend.controller.api.model.AttemptDTO;
 import gerallal.quizloungebackend.controller.api.model.AttemptResultDTO;
 import gerallal.quizloungebackend.controller.api.model.QuestionDTO;
 import gerallal.quizloungebackend.entity.Attempt;
-import gerallal.quizloungebackend.entity.Question;
 import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.*;
@@ -185,6 +184,7 @@ public class AttemptRESTController {
             return ResponseEntity.badRequest().body("Rating must be between 1 and 5");
         }
 
+        assert quiz != null;
         ratingQuizService.saveRating(user.getId(), quiz.getId(), rating);
 
         return ResponseEntity.ok(Map.of("message", "Rating saved"));
@@ -199,6 +199,7 @@ public class AttemptRESTController {
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Quiz quiz = quizService.getQuizById(id).orElse(null);
+        assert quiz != null;
         int numberOfQuestions = questionService.getNumberOfQuestions(quiz.getId());
         Optional<Attempt> attempt = attemptService.getLatestAttemptByUserAndQuiz(user.getId(), quiz.getId());
 

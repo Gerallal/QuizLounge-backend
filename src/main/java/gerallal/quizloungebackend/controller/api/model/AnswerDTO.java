@@ -1,6 +1,5 @@
 package gerallal.quizloungebackend.controller.api.model;
 
-import gerallal.quizloungebackend.entity.Question;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

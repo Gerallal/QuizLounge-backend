@@ -38,8 +38,4 @@ public class Quiz {
     private int numberOfRatings;
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RatingQuiz> ratingQuiz = new ArrayList<>();
-
-    public double getAverageRating() {
-        return numberOfRatings == 0 ? 0.0 : (double) totalRating / numberOfRatings;
-    }
 }

@@ -50,7 +50,7 @@ public class StatsRestController {
             double average;
             List<RatingDTO> ratings = ratingQuizService.getRatingQuizzesByQuizID(q.getId());
             average = ratingQuizService.getAverageRatingByQuizID(q.getId());
-            ratings.forEach(rating -> {rating.setAverageRating(average);});
+            ratings.forEach(rating -> rating.setAverageRating(average));
             result.addAll(ratings);
         }
 
@@ -79,25 +79,23 @@ public class StatsRestController {
                                 q -> questionService.getNumberOfQuestions(q.getId())
                         ));
 
-        List<StatsDTO> results =
-                getAllOfMyAttempts.stream()
-                        .map(attempt -> new StatsDTO(
-                                attempt.getQuiz().getId(),
-                                user.getUsername(),
-                                attempt.getNumberOfRightAnswers(),
-                                questionCountByQuizId.get(attempt.getQuiz().getId()),
-                                attempt.getQuiz().getTitle(),
-                                attempt.getEndTime()
-                        ))
-                        .toList();
-
-        return results;
+        return getAllOfMyAttempts.stream()
+                .map(attempt -> new StatsDTO(
+                        attempt.getQuiz().getId(),
+                        user.getUsername(),
+                        attempt.getNumberOfRightAnswers(),
+                        questionCountByQuizId.get(attempt.getQuiz().getId()),
+                        attempt.getQuiz().getTitle(),
+                        attempt.getEndTime()
+                ))
+                .toList();
 
 
     }
 
     @GetMapping("/statsOfMyQuizzes")
-    public List<StatsDTO> getStatsOfMyQuizzes(HttpSession session){
+    public List<StatsDTO> getStatsOfMyQuizzes(){
+        // Fixen plss
         String username = "Basti";
 
         if (username == null) {
@@ -118,24 +116,21 @@ public class StatsRestController {
                                 q -> questionService.getNumberOfQuestions(q.getId())
                         ));
 
-        List<StatsDTO> results =
-                quiz.stream()
-                        .flatMap(q ->
-                                attemptService
-                                        .findAllAttemptsByQuizId(q.getId())
-                                        .stream()
-                        )
-                        .filter(Attempt::isFinished)
-                        .map(attempt -> new StatsDTO(
-                                attempt.getQuiz().getId(),
-                                attempt.getUser().getUsername(),
-                                attempt.getNumberOfRightAnswers(),
-                                questionCountByQuizId.get(attempt.getQuiz().getId()),
-                                attempt.getQuiz().getTitle(),
-                                attempt.getEndTime()
-                        ))
-                        .toList();
-
-         return results;
+        return quiz.stream()
+                .flatMap(q ->
+                        attemptService
+                                .findAllAttemptsByQuizId(q.getId())
+                                .stream()
+                )
+                .filter(Attempt::isFinished)
+                .map(attempt -> new StatsDTO(
+                        attempt.getQuiz().getId(),
+                        attempt.getUser().getUsername(),
+                        attempt.getNumberOfRightAnswers(),
+                        questionCountByQuizId.get(attempt.getQuiz().getId()),
+                        attempt.getQuiz().getTitle(),
+                        attempt.getEndTime()
+                ))
+                .toList();
     }
 }

@@ -70,7 +70,7 @@ public class AttemptService {
                     result = userAnswers.equals(correctAnswer);
                     break;
                 case UserInputQuestion:
-                    result = evaluationService.evaluate(question.getQuestionName().toString(), userAnswer);
+                    result = evaluationService.evaluate(question.getQuestionName(), userAnswer);
 
                     System.out.println(result);
                     break;

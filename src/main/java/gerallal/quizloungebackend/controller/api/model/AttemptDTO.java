@@ -1,7 +1,5 @@
 package gerallal.quizloungebackend.controller.api.model;
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class AttemptDTO {
-
     private Long attemptId;
     private Long quizId;
-    //private String quizTitle;
     private List<QuestionDTO> questions;
-
 }

@@ -24,8 +24,6 @@ public class Question {
 
     private QuestionType typeOfQuestion;
 
-    //private int rightAnswer; //wird durch ein Attribute von der Entität Answer definiert
-
     @ManyToOne
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;

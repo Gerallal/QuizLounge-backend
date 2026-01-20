@@ -5,7 +5,6 @@ import gerallal.quizloungebackend.entity.Quiz;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.RepositoryDefinition;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

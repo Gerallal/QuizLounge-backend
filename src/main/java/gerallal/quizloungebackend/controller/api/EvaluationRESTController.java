@@ -5,14 +5,11 @@ import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.EvaluationService;
 import gerallal.quizloungebackend.service.UserService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor

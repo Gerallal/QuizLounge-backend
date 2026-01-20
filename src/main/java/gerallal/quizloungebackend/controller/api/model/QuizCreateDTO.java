@@ -47,10 +47,4 @@ public class QuizCreateDTO {
         this.questions = questions;
         this.attempt = attempt;
     }
-
-    public QuizCreateDTO(String successMessage,
-                         Long quizId) {
-        this.successMessage = successMessage;
-        this.quizId = quizId;
-    }
 }

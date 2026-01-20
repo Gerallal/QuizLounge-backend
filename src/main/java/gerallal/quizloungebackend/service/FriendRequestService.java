@@ -56,11 +56,10 @@ public class FriendRequestService {
     }
 
     public static FriendRequestDTO map(FriendRequest friendRequest){
-        FriendRequestDTO friendRequestDTO = FriendRequestDTO.builder()
+        return FriendRequestDTO.builder()
                 .id(friendRequest.getId())
                 .sender(friendRequest.getSender().getUsername())
                 .build();
-        return friendRequestDTO;
     }
 
     public boolean acceptFriendRequest(String receiverName, Long frqID) {
