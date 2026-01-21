@@ -9,8 +9,6 @@ import gerallal.quizloungebackend.entity.Quiz;
 import gerallal.quizloungebackend.entity.User;
 import gerallal.quizloungebackend.service.*;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -29,24 +27,24 @@ public class AttemptRESTController {
     private final QuestionService questionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> solve(@PathVariable long id, HttpSession session) {
+    public AttemptDTO solve(@PathVariable long id, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+            throw new RuntimeException("Ausgeloggt");
         }
 
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Quiz quiz = quizService.getQuizById(id).orElse(null);
         if (quiz == null) {
-            return ResponseEntity.badRequest().body("No quiz available");
+            throw new RuntimeException("Quiz not found");
         }
         if (quiz.getQuestions().isEmpty()) {
-            return ResponseEntity.badRequest().body("No questions available");
+            throw new RuntimeException("Question not found");
         }
 
         Attempt attempt = attemptService.startAttempt(quiz, user);
-        AttemptDTO dto = AttemptDTO.builder()
+        return AttemptDTO.builder()
                 .attemptId(attempt.getId())
                 .quizId(quiz.getId())
                 //.quizTitle(quiz.getTitle())
@@ -70,36 +68,35 @@ public class AttemptRESTController {
                                 ).toList()
                 )
                 .build();
-        return ResponseEntity.ok(dto);
 
     }
 
     @GetMapping("/attempts/{id}")
-    public ResponseEntity<?> solveQuiz(@PathVariable long id, HttpSession session) {
+    public AttemptDTO solveQuiz(@PathVariable long id, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+            throw new RuntimeException("Ausgeloggt");
         }
 
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
         Attempt attempt = attemptService.findAttemptById(id).orElse(null);
         if (attempt == null) {
-            return ResponseEntity.badRequest().body("Attempt not found");
+            throw new RuntimeException("Attempt not found");
         }
         if (attempt.isFinished()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Attempt already finished");
+            throw new RuntimeException("Attempt is finished");
         }
         if (!user.equals(attempt.getUser())) {
-            return ResponseEntity.badRequest().body("User does not belong to Attempt");
+            throw new RuntimeException("User does not belong to Attempt");
         }
 
         Quiz quiz = attempt.getQuiz();
         if (quiz.getQuestions().isEmpty()) {
-            return ResponseEntity.badRequest().body("No questions available");
+            throw new RuntimeException("Question not found");
         }
 
-        AttemptDTO dto = AttemptDTO.builder()
+        return AttemptDTO.builder()
                 .attemptId(attempt.getId())
                 .quizId(quiz.getId())
                 //.quizTitle(quiz.getTitle())
@@ -124,27 +121,26 @@ public class AttemptRESTController {
                                 .toList()
                 )
                 .build();
-        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/attempts/{id}/evaluate")
-    public ResponseEntity<?> evaluateAttempt(
+    public AttemptResultDTO evaluateAttempt(
             @PathVariable long id,
             @RequestBody Map<String, String> allParams,
             HttpSession session) {
 
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+            throw new RuntimeException("Ausgeloggt");
         }
 
 
         Attempt attempt = attemptService.findAttemptById(id).orElse(null);
         if (attempt == null) {
-            return ResponseEntity.badRequest().body("Attempt not found");
+            throw new RuntimeException("Attempt not found");
         }
         if (allParams == null || allParams.isEmpty()) {
-            return ResponseEntity.badRequest().body("No answers sent");
+            throw new RuntimeException("No answers sent");
         }
 
         attemptService.evaluateAttempt(attempt, allParams);
@@ -152,7 +148,7 @@ public class AttemptRESTController {
         quiz.getAttempts().add(attempt);
         quizService.saveQuiz(quiz);
 
-        AttemptResultDTO result = AttemptResultDTO.builder()
+        return AttemptResultDTO.builder()
                 .attemptId(attempt.getId())
                 .quizId(attempt.getQuiz().getId())
                 .finished(attempt.isFinished())
@@ -162,38 +158,38 @@ public class AttemptRESTController {
                 .scoreInPercent(attempt.getScoreInPercent())
                 .build();
 
-        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{id}/rating")
-    public ResponseEntity<?> ratingQuiz(@PathVariable long id, HttpSession session, @RequestBody Map<String, Integer> allParams) {
+    public Map<String, String> ratingQuiz(@PathVariable long id, HttpSession session, @RequestBody Map<String, Integer> allParams) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+            throw new RuntimeException("Ausgeloggt");
         }
 
         if (allParams == null || allParams.isEmpty()) {
-            return ResponseEntity.badRequest().body("No rating sent");
+            throw new RuntimeException("No rating sent");
         }
 
         User user = userService.getUserByUsername(session.getAttribute("username").toString());
-        Quiz quiz = quizService.getQuizById(id).orElse(null);
+        Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         Integer rating = allParams.get("rating");
 
         if (rating < 1 || rating > 5) {
-            return ResponseEntity.badRequest().body("Rating must be between 1 and 5");
+            throw new RuntimeException("Rating must be between 1 and 5");
         }
 
         assert quiz != null;
         ratingQuizService.saveRating(user.getId(), quiz.getId(), rating);
 
-        return ResponseEntity.ok(Map.of("message", "Rating saved"));
+        return Map.of("message", "Rating saved");
     }
+
     @GetMapping("/{id}/results")
-    public ResponseEntity<?> getResults(@PathVariable long id, HttpSession session) {
+    public AttemptResultDTO getResults(@PathVariable long id, HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+            throw new RuntimeException("Attempt not found");
         }
 
 
@@ -203,12 +199,11 @@ public class AttemptRESTController {
         int numberOfQuestions = questionService.getNumberOfQuestions(quiz.getId());
         Optional<Attempt> attempt = attemptService.getLatestAttemptByUserAndQuiz(user.getId(), quiz.getId());
 
-        AttemptResultDTO resultDTO = AttemptResultDTO.builder()
+        return AttemptResultDTO.builder()
                 .quizId(attempt.get().getQuiz().getId())
                 .numberOfRightAnswers(attempt.get().getNumberOfRightAnswers())
                 .totalQuestions(numberOfQuestions)
                 .build();
 
-        return ResponseEntity.ok(resultDTO);
     }
 }
