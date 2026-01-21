@@ -25,6 +25,6 @@ public class User {
     private List<FriendRequest> senderFriendRequests;
     @ManyToMany
     private List<Quiz> quizzes;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> receivedQuizzes;
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Quiz> receivedQuizzes;
 }

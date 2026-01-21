@@ -56,6 +56,7 @@ public class StatsRestController {
 
         return result;
     }
+
     @GetMapping("/myStats")
     public List<StatsDTO> getMyStats(HttpSession session) {
         String username = (String) session.getAttribute("username");
@@ -94,13 +95,7 @@ public class StatsRestController {
     }
 
     @GetMapping("/statsOfMyQuizzes")
-    public List<StatsDTO> getStatsOfMyQuizzes(){
-        // Fixen plss
-        String username = "Basti";
-
-        if (username == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not logged in");
-        }
+    public List<StatsDTO> getStatsOfMyQuizzes(@RequestParam String username){
 
         User user = userService.getUserByUsername(username);
         if (user == null) {

@@ -61,7 +61,7 @@ public class UserRESTController {
                 return new UserDTO(
                         user.getUsername(),
                         user.getId(),
-                        user.getReceivedQuizzes()
+                        user.getQuizzes()
                                 .stream()
                                 .map(q -> new QuizCreateDTO(
                                         q.getId(),
@@ -102,7 +102,7 @@ public class UserRESTController {
                 .map(friend -> new UserDTO(
                         friend.getUsername(),
                         friend.getId(),
-                        friend.getReceivedQuizzes()
+                        friend.getQuizzes()
                                 .stream()
                                 .map(q -> new QuizCreateDTO(
                                         q.getId(),

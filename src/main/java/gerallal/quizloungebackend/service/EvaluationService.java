@@ -16,8 +16,8 @@ public class EvaluationService {
     private final OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
 
-    public boolean evaluate(String question, String answer) {
-        String prompt = String.format("Wie ähnlich ist die Antwort '%s' zu der Frage '%s'? Antworte nur true oder false", question, answer);
+    public boolean evaluate(String givenAnswer, String answer) {
+        String prompt = String.format("Wie ähnlich ist die Antwort '%s' zu der Antwort '%s'? Antworte nur true oder false", givenAnswer, answer);
 
         ResponseCreateParams params = ResponseCreateParams.builder()
                 .input(prompt)

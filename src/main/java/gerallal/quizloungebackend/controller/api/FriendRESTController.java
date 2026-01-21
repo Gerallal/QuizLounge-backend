@@ -28,7 +28,7 @@ public class FriendRESTController {
         return new UserDTO(
                 friend.getUsername(),
                 friend.getId(),
-                friend.getReceivedQuizzes()
+                friend.getQuizzes()
                         .stream()
                         .map(rq -> new QuizCreateDTO(
                                 rq.getId(),
@@ -61,10 +61,9 @@ public class FriendRESTController {
         HttpSession session = request.getSession(false);
 
         User user = userService.getUserByUsername((String) session.getAttribute("username"));
-
         User friend = userService.getUserByID(id).orElse(null);
 
-        userService.deleteFriendById(user, friend);
+        userService.deleteFriendByFriendEntity(user, friend);
 
     }
 }

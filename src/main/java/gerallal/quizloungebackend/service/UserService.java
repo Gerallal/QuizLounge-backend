@@ -12,6 +12,7 @@ import gerallal.quizloungebackend.controller.api.model.UserDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -76,12 +77,16 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteFriendById(User user, User friend) {
+    public void deleteFriendByFriendEntity(User user, User friend) {
         user.getFriends().remove(friend);
         friend.getFriends().remove(user);
+
+        user.getQuizzes().removeIf(quiz -> quiz.getAuthor().equals(friend));
+        friend.getQuizzes().removeIf(quiz -> quiz.getAuthor().equals(user));
+
         userRepository.save(user);
         userRepository.save(friend);
-//        userRepository.deleteFriendsById(friendId);
+//      userRepository.deleteFriendsById(friendId);
     }
 
 }

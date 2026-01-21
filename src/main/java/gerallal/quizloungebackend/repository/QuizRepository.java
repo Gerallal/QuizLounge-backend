@@ -11,6 +11,6 @@ import java.util.Optional;
 @RepositoryDefinition(domainClass = User.class, idClass = Long.class)
 public interface QuizRepository extends CrudRepository<Quiz, Long> {
     List<Quiz> findByAuthor(User user);
-    List<Quiz> findByCategory(String category);
     Optional<Quiz> findById(long id);
+    List<Quiz> findAll();
 }

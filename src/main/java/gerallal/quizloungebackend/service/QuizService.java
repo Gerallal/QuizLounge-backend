@@ -20,7 +20,6 @@ public class  QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
 
-
     public Optional<Quiz> getQuizById(long id) {return quizRepository.findById(id);}
 
     public Quiz saveQuiz(Quiz quiz) { return quizRepository.save(quiz);}

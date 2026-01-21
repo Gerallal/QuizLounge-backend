@@ -60,7 +60,7 @@ public class AttemptRESTController {
                                                         .map(a -> AnswerDTO.builder()
                                                                 .answerId(a.getId())
                                                                 .answerText(a.getAnswerName())
-                                                                .correct(a.isCorrect())
+                                                                .correct(false)
                                                                 .build()
                                                         ).toList()
                                         )
@@ -99,7 +99,6 @@ public class AttemptRESTController {
         return AttemptDTO.builder()
                 .attemptId(attempt.getId())
                 .quizId(quiz.getId())
-                //.quizTitle(quiz.getTitle())
                 .questions(
                         quiz.getQuestions().stream()
                                 .map(q -> QuestionDTO.builder()
@@ -112,7 +111,7 @@ public class AttemptRESTController {
                                                         .map(a -> AnswerDTO.builder()
                                                                 .answerId(a.getId())
                                                                 .answerText(a.getAnswerName()) // wichtig!
-                                                                .correct(a.isCorrect())        // wichtig!
+                                                                .correct(false)        // wichtig!
                                                                 .build()
                                                         ).toList()
                                         )

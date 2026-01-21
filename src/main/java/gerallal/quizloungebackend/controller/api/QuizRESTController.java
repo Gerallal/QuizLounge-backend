@@ -94,7 +94,7 @@ public class QuizRESTController {
     }
 
     @GetMapping("/myQuiz/{id}")
-    public QuizCreateDTO showAndSolveMyQuiz(@PathVariable long id) {
+    public QuizCreateDTO showAndEditMyQuiz(@PathVariable long id) {
 
         Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
         User author = quiz.getAuthor();
@@ -112,7 +112,59 @@ public class QuizRESTController {
                 new UserDTO(
                         author.getUsername(),
                         author.getId(),
-                        author.getReceivedQuizzes()
+                        author.getQuizzes()
+                                .stream()
+                                .map(q -> new QuizCreateDTO(
+                                        q.getId(),
+                                        q.getTitle(),
+                                        q.getDescription(),
+                                        q.getCategory()
+                                ))
+                                .toList()),
+                quiz.getTitle(),
+                quiz.getDescription(),
+                quiz.getCategory(),
+                quiz.getQuestions()
+                        .stream()
+                        .map(q -> new QuestionDTO(
+                                q.getId(),
+                                q.getQuestionName(),
+                                q.getTypeOfQuestion(),
+                                quiz.getId(),
+                                q.getAnswers()
+                                        .stream()
+                                        .map(a -> new AnswerDTO(
+                                                a.getId(),
+                                                a.getAnswerName(),
+                                                a.isCorrect()
+                                        ))
+                                        .toList()
+                        ))
+                        .toList(),
+                attemptDTO
+        );
+    }
+
+    @GetMapping("/myQuiz/solve/{id}")
+    public QuizCreateDTO solveQuiz(@PathVariable long id) {
+
+        Quiz quiz = quizService.getQuizById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+        User author = quiz.getAuthor();
+
+        AttemptDTO attemptDTO = quiz.getAttempts().isEmpty()
+                ? null
+                : new AttemptDTO(
+                quiz.getAttempts().get(quiz.getAttempts().size() - 1).getId(),
+                quiz.getId(),
+                null
+        );
+
+        return new QuizCreateDTO(
+                quiz.getId(),
+                new UserDTO(
+                        author.getUsername(),
+                        author.getId(),
+                        author.getQuizzes()
                                 .stream()
                                 .map(q -> new QuizCreateDTO(
                                         q.getId(),

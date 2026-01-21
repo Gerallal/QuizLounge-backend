@@ -34,8 +34,6 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
 
-    private int totalRating;
-    private int numberOfRatings;
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RatingQuiz> ratingQuiz = new ArrayList<>();
 }
